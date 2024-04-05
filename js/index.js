@@ -1,4 +1,9 @@
-const net = new brain.NeuralNetwork()
+const net = new brain.NeuralNetwork({
+    inputSize: 3,
+    outputSize: 1
+})
+
+console.log("Red neuronal:", net);
 
 const datosEntrenamientoLibros = [
     {
@@ -18,7 +23,7 @@ const datosEntrenamientoLibros = [
             fecha: 1954
         },
         output: {
-            like: 0
+            like: 1
         }
     },
     {
@@ -26,6 +31,16 @@ const datosEntrenamientoLibros = [
             type: "Novela",
             autor: "E.L James",
             fecha: 2019
+        },
+        output: {
+            like: 0
+        }
+    },
+    {
+        input: {
+            type: "Terror",
+            autor: "El exorcista",
+            fecha: 1970
         },
         output: {
             like: 1
@@ -54,29 +69,30 @@ function obtenerLibroMostrado(datosEntrenamientoLibros) {
 
 //entrenar el modelo en base a los datos de datosEntrenamientoLibros
 const trainingResult = net.train(datosEntrenamientoLibros);
-console.log({trainingResult});
-
+console.log("modelo entrenado", {trainingResult});
 
 //Tomar el libro que le gusta al usuario y predecir si le gustará otro libro
 const { libroMostradoAlUsuario } = obtenerLibroMostrado(datosEntrenamientoLibros);
-console.log({libroMostrado: libroMostradoAlUsuario});
+console.log("libro que le gustará al user?", {libroMostrado: libroMostradoAlUsuario});
 
-// Convertir ese objeto que me devuelve, cada valor debe ser transformado en [0, 1, 2]
-// para que el modelo pueda hacer la predicción
-
+// Convertir ese objeto que me devuelve, cada valor debe ser transformado en [0, 1, 2] para que el modelo pueda hacer la predicción
 const entrada = {
     type: 0,
     autor: 1,
     fecha: 2
 };
+console.log("Entrada para la predicción:", entrada);
 
 //resultado de la predicción
 const resultado = net.run(entrada);
 console.log("Resultado de la predicción:", resultado);
 
-// en base a ese resultado, recomendar un libro al usuario que le guste
+//Grafico neuronal
+ const graficaresultado = document.getElementById('graficaresultado');
+ graficaresultado.innerHTML = brain.utilities.toSVG(net);
 
-if (resultado.like > 0.5) {
+// en base a ese resultado, recomendar un libro al usuario que le guste
+if (resultado.like > 0.3) {
     console.log("Te recomendamos el libro:", libroMostradoAlUsuario);
 } else {
     console.log("No te recomendamos el libro:", libroMostradoAlUsuario);
