@@ -1,80 +1,83 @@
-//Array con datos de libros
-const apiLibros = [
+const net = new brain.NeuralNetwork()
+
+const datosEntrenamientoLibros = [
     {
-        title: "El principito",
-        type: "Novela",
+        input: {
+            type: "Novela",
+            autor: "Gabriel García Márquez",
+            fecha: 1967
+        },
+        output: {
+            like: 1
+        }
     },
     {
-        title: "El arte de la guerra",
-        type: "Ensayo",
+        input: {
+            type: "Fantasía",
+            autor: "J.R.R. Tolkien",
+            fecha: 1954
+        },
+        output: {
+            like: 0
+        }
     },
     {
-        title: "El amor en los tiempos del cólera",
-        type: "Novela",
-    },
-    {
-        title: "El código Da Vinci",
-        type: "Novela",
-    },
-    {
-        title: "El perfume",
-        type: "Drama",
-    },
-    {
-        title: "El señor de los anillos",
-        type: "Fantasía",
-    },
-    {
-        title: "Cien años de soledad",
-        type: "Novela",
-    },
-    {
-        title: "1984",
-        type: "Ciencia ficción",
-    },
-    {
-        title: "Harry Potter y la piedra filosofal",
-        type: "Fantasía",
-    },
-    {
-        title: "Crónica de una muerte anunciada",
-        type: "Novela",
-    },
-    {
-        title: "Moby Dick",
-        type: "Aventura",
+        input: {
+            type: "Novela",
+            autor: "E.L James",
+            fecha: 2019
+        },
+        output: {
+            like: 1
+        }
     }
 ];
 
-const datosEntrenamiento = []
+// Itera sobre los datos de entrenamiento y escoge un libro que le guste al usuario
+function obtenerLibroMostrado(datosEntrenamientoLibros) {
+    let libroMostradoAlUsuario = null;
 
-// Convertir los datos de la API en un formato compatible para entrenar el modelo
-apiLibros.forEach((libro) => {
-    const entrada = {}
-    entrada[libro.title] = 0 //Establece la propiedad en 0
-    datosEntrenamiento.push({input: entrada,output: {liked: 1}}) //si ha visto un libro, le gusta
-})
-console.log("datosEntrenamiento", datosEntrenamiento)
+    datosEntrenamientoLibros.forEach((libro, index) => {
+        const entradaLibro = libro.input;
+        const salidaUsuario = libro.output;
 
-const net = new brain.NeuralNetwork();
+        // Verifica si al usuario vio el libro
+        if (salidaUsuario.like === 1) {
+            libroMostradoAlUsuario = entradaLibro;
+            console.log("Libro mostrado al usuario (Índice " + index + "):", libroMostradoAlUsuario);
+            return 
+        }
+    });
 
-//entrenar el modelo
-net.train(datosEntrenamiento);
+    return  { libroMostradoAlUsuario };
+}
 
-//supongamos que el usuario ha visto el siguiente libro
+//entrenar el modelo en base a los datos de datosEntrenamientoLibros
+const trainingResult = net.train(datosEntrenamientoLibros);
+console.log({trainingResult});
 
-const titulosLibros = Object.keys(datosEntrenamiento[1].input)
-console.log("titulosLibros", titulosLibros)
 
-//Resultado de la predicción
-const resultado = net.run(titulosLibros)
-console.log("resultado", resultado) // predice el 0.9
+//Tomar el libro que le gusta al usuario y predecir si le gustará otro libro
+const { libroMostradoAlUsuario } = obtenerLibroMostrado(datosEntrenamientoLibros);
+console.log({libroMostrado: libroMostradoAlUsuario});
 
-// Encontrar el libro con la probabilidad más alta
-const libroRecomendado = datosEntrenamiento.find((dato) => resultado[Object.keys(dato.input)[0]] > 0.5);
+// Convertir ese objeto que me devuelve, cada valor debe ser transformado en [0, 1, 2]
+// para que el modelo pueda hacer la predicción
 
-if (libroRecomendado) {
-    console.log("Libro recomendado:", Object.keys(libroRecomendado.input)[0]);
+const entrada = {
+    type: 0,
+    autor: 1,
+    fecha: 2
+};
+
+//resultado de la predicción
+const resultado = net.run(entrada);
+console.log("Resultado de la predicción:", resultado);
+
+// en base a ese resultado, recomendar un libro al usuario que le guste
+
+if (resultado.like > 0.5) {
+    console.log("Te recomendamos el libro:", libroMostradoAlUsuario);
 } else {
-    console.log("No se encontró ningún libro recomendado.");
-} // está en el else, hay que investigar por qué no se encuentra el libro recomendado
+    console.log("No te recomendamos el libro:", libroMostradoAlUsuario);
+}
