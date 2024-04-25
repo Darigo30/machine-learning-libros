@@ -1,99 +1,56 @@
-const net = new brain.NeuralNetwork({
-    inputSize: 3,
-    outputSize: 1
-})
+import datosEntrenamientoLibros from './modelo/libro.js';
 
-console.log("Red neuronal:", net);
-
-const datosEntrenamientoLibros = [
-    {
-        input: {
-            type: "Novela",
-            autor: "Gabriel García Márquez",
-            fecha: 1967
-        },
-        output: {
-            like: 1
-        }
-    },
-    {
-        input: {
-            type: "Fantasía",
-            autor: "J.R.R. Tolkien",
-            fecha: 1954
-        },
-        output: {
-            like: 1
-        }
-    },
-    {
-        input: {
-            type: "Novela",
-            autor: "E.L James",
-            fecha: 2019
-        },
-        output: {
-            like: 0
-        }
-    },
-    {
-        input: {
-            type: "Terror",
-            autor: "El exorcista",
-            fecha: 1970
-        },
-        output: {
-            like: 1
-        }
-    }
-];
-
-// Itera sobre los datos de entrenamiento y escoge un libro que le guste al usuario
-function obtenerLibroMostrado(datosEntrenamientoLibros) {
-    let libroMostradoAlUsuario = null;
-
-    datosEntrenamientoLibros.forEach((libro, index) => {
-        const entradaLibro = libro.input;
-        const salidaUsuario = libro.output;
-
-        // Verifica si al usuario vio el libro
-        if (salidaUsuario.like === 1) {
-            libroMostradoAlUsuario = entradaLibro;
-            console.log("Libro mostrado al usuario (Índice " + index + "):", libroMostradoAlUsuario);
-            return 
-        }
-    });
-
-    return  { libroMostradoAlUsuario };
-}
-
-//entrenar el modelo en base a los datos de datosEntrenamientoLibros
-const trainingResult = net.train(datosEntrenamientoLibros);
-console.log("modelo entrenado", {trainingResult});
-
-//Tomar el libro que le gusta al usuario y predecir si le gustará otro libro
-const { libroMostradoAlUsuario } = obtenerLibroMostrado(datosEntrenamientoLibros);
-console.log("libro que le gustará al user?", {libroMostrado: libroMostradoAlUsuario});
-
-// Convertir ese objeto que me devuelve, cada valor debe ser transformado en [0, 1, 2] para que el modelo pueda hacer la predicción
-const entrada = {
-    type: 0,
-    autor: 1,
-    fecha: 2
+// Mapeos para los tipos de libros y autores
+const typeMapping = {
+    "Novela": [1, 0, 0],
+    "Fantasía": [0, 1, 0],
+    "Terror": [0, 0, 1]
 };
-console.log("Entrada para la predicción:", entrada);
 
-//resultado de la predicción
-const resultado = net.run(entrada);
-console.log("Resultado de la predicción:", resultado);
+const authorMapping = {
+    "Gabriel García Márquez": [1, 0, 0, 0],
+    "J.R.R. Tolkien": [0, 1, 0, 0],
+    "E.L James": [0, 0, 1, 0],
+    "William Peter Blatty": [0, 0, 0, 1]
+};
 
-//Grafico neuronal
- const graficaresultado = document.getElementById('graficaresultado');
- graficaresultado.innerHTML = brain.utilities.toSVG(net);
-
-// en base a ese resultado, recomendar un libro al usuario que le guste
-if (resultado.like > 0.3) {
-    console.log("Te recomendamos el libro:", libroMostradoAlUsuario);
-} else {
-    console.log("No te recomendamos el libro:", libroMostradoAlUsuario);
+// Normaliza el año para la red
+function normalizeYear(year) {
+    return (year - 1900) / 100;  
 }
+
+const processedData = datosEntrenamientoLibros.map(libro => ({
+    input: [
+        ...typeMapping[libro.input.type],
+        ...authorMapping[libro.input.autor],
+        normalizeYear(libro.input.fecha)
+    ],
+    output: [libro.output.like],
+    details: libro.details
+}));
+
+//inicializa la red neuronal
+const net = new brain.NeuralNetwork();
+
+//Entrenar la red neuronal
+net.train(processedData.map(item => ({ input: item.input, output: item.output })));
+
+const libroVisto = { nombre: "El Señor de los Anillos", autor: "J.R.R. Tolkien", fecha: 1954 };
+console.log("Libro visto por el usuario:", libroVisto);
+
+const puntuaciones = processedData.map(item => ({
+    score: net.run(item.input),
+    details: item.details
+}));
+
+const filtrarpuntuaciones = puntuaciones.filter(item => 
+    !(item.details.nombre === libroVisto.nombre && item.details.autor === libroVisto.autor)
+);
+
+const ordenarPuntuaciones = filtrarpuntuaciones.sort((a, b) => b.score - a.score);
+const topDeLibros = ordenarPuntuaciones.slice(0, 3);
+
+console.log("Libros recomendados:");
+topDeLibros.forEach((book, index) => {
+    console.log(`${index + 1}. Libro: ${book.details.nombre}, Autor: ${book.details.autor}, Puntuación de 'like': ${book.score}`);
+});
