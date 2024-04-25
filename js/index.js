@@ -35,6 +35,22 @@ const net = new brain.NeuralNetwork();
 //Entrenar la red neuronal
 net.train(processedData.map(item => ({ input: item.input, output: item.output })));
 
+// Esperar a que el DOM esté completamente cargado para manipularlo
+document.addEventListener('DOMContentLoaded', function () {
+    const listaLibrosElement = document.getElementById('lista-libros');
+
+    datosEntrenamientoLibros.forEach(libro => {
+        const libroElement = document.createElement('div');
+        libroElement.innerHTML = `
+        <strong>${libro.details.nombre}</strong>
+        por ${libro.details.autor}
+        - Publicado en ${libro.input.fecha}
+        - Tipo: ${libro.input.type}
+        <img src="${libro.input.imagen}" alt="Portada de ${libro.input.nombre}" style="width:100px; height:auto;">`;
+        listaLibrosElement.appendChild(libroElement);
+    });
+});
+
 const libroVisto = { nombre: "El Señor de los Anillos", autor: "J.R.R. Tolkien", fecha: 1954 };
 console.log("Libro visto por el usuario:", libroVisto);
 
@@ -50,7 +66,17 @@ const filtrarpuntuaciones = puntuaciones.filter(item =>
 const ordenarPuntuaciones = filtrarpuntuaciones.sort((a, b) => b.score - a.score);
 const topDeLibros = ordenarPuntuaciones.slice(0, 3);
 
-console.log("Libros recomendados:");
+const librosRecomendadosElement = document.getElementById('libros-recomendados');
+
 topDeLibros.forEach((book, index) => {
-    console.log(`${index + 1}. Libro: ${book.details.nombre}, Autor: ${book.details.autor}, Puntuación de 'like': ${book.score}`);
+    const recomendacionElement = document.createElement('div');
+    recomendacionElement.innerHTML = 
+    `${index + 1}. <strong>${book.details.nombre}
+    </strong> por ${book.details.autor}
+    - Puntuación de 'like': ${book.score}
+    <img src="${book.details.imagen}" alt="Portada de ${book.details.nombre}" style="width:100px; height:auto;">`;
+    
+    
+    librosRecomendadosElement.appendChild(recomendacionElement);
+    console.log(book);
 });
