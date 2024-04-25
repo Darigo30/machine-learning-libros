@@ -4,17 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Red Neuronal ML</title>
+    <link rel="stylesheet" href="https://kit-digital-uc-prod.s3.amazonaws.com/uc-kitdigital/css/uc-kitdigital.css"/>
+
 </head>
 <body>
 
-    <h1>Libros Disponibles</h1>
-    <div id="lista-libros"></div>
 
-    <h2>Te recomendamos según tus últimos recursos vistos</h2>
-    <div id="libros-recomendados"></div>
 
+    
+
+    <header class="uc-header">
+        <div id="uc-global-topbar"></div>
+        <nav class="uc-navbar">
+          <!-- Menú para versión Escritorio -->
+          <div class="container d-none d-lg-block">
+            <div class="row">
+              <div class="col-lg-3 col-xl-2">
+                <img
+                  src="https://kit-digital-uc-prod.s3.amazonaws.com/assets/logo-uc-azul.svg"
+                  alt="Pontificia Universidad Católica de Chile"
+                  class="img-fluid"
+                />
+              </div>
+              <div class="col-lg-8 col-xl-9 pl-60">
+                <div class="h2 text-font--serif text-color--blue mt-24">Repositorio UC</div>
+                <div class="text-color--gray p-size--lg">
+                  Machine Learning de recomendación de recursos bibliográficos
+                </div>
+              </div>
+            </div>
+        
+          </div>
+         
+        </nav>
+    </header>
+      
+    <div class="section mt-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Recursos bibliográficos</h1>
+                    <p>Machine Learning de recomendación de recursos bibliográficos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section mt-60">
+        <div class="container">
+            <div id="lista-libros" class="row"></div>
+        </div>
+    </div>
+
+    <div class="section mt-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2>Recomendaciones</h2>
+                    <p>Recomendaciones de libros según tus preferencias</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section mt-60">
+        <div class="container">
+            <div id="libros-recomendados" class="row"></div>
+        </div>
+    </div>
 
     <script src="https://unpkg.com/brain.js@2.0.0-beta.23/dist/browser.js"></script>
+    <script src="https://kit-digital-uc-prod.s3.amazonaws.com/uc-kitdigital/js/uc-kitdigital.js"></script>
     <script type="module" src="./js/index.js"></script>
+    
 </body>
 </html>

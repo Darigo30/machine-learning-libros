@@ -104,7 +104,7 @@ const datosEntrenamientoLibros = [
             imagen: "https://images.cdn1.buscalibre.com/fit-in/360x360/35/2e/352e63af40b5cc4eada5cee03da49412.jpg"
         },
         output: {
-            like: 0
+            like: 1
         },
         details: {
             nombre: "El Señor de los Anillos: Las Dos Torres",
@@ -124,7 +124,8 @@ const datosEntrenamientoLibros = [
         },
         details: {
             nombre: "Crónica de una Muerte Anunciada",
-            autor: "Gabriel García Márquez"
+            autor: "Gabriel García Márquez",
+            imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQs80PyWxw0gLOJPo0vnS7czcTAnLVthER82VrL9kO1AA&s"
         }
     },
     {
@@ -135,7 +136,7 @@ const datosEntrenamientoLibros = [
             imagen: "https://wp.es.aleteia.org/wp-content/uploads/sites/7/2022/04/La-amarga-Pasion-de-Cristo-lavozdepapel.jpg?w=470"
         },
         output: {
-            like: 1
+            like: 0
         },
         details: {
             nombre: "Legión de Maria",
