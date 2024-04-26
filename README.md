@@ -7,3 +7,5 @@ Es un modelo simple, con un gráfico
 //Todo prox, generar en vez que sea por lo que vio que sea con un star rating y que el usuario pueda calificar los libros
 ## JS: 🖌️💖
 ![imagen](https://github.com/Darigo30/machine-learning-libros/assets/39928174/1dbf21b3-547e-4722-837e-4581b83c2e1e)
+![imagen](https://github.com/Darigo30/machine-learning-libros/assets/39928174/65900391-3c5f-43fc-abd6-56ca4b77b8ba)
+
